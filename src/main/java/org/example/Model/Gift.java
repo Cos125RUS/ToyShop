@@ -1,11 +1,20 @@
 package org.example.Model;
 
-public class Gift extends Toy{
+/**
+ * Игрушки, выигранные в лотерее и ожидающие вручения
+ */
+public class Gift extends Product {
+    /**
+     * @param id id игрушки
+     * @param name название игрушки
+     */
     public Gift(int id, String name) {
-        super(name);
-        super.id = id;
+        super(id, name);
     }
 
+    /**
+     * @return строка для записи в базу данных
+     */
     @Override
     public String toWrite() {
         return id + ";" + name + "\n";

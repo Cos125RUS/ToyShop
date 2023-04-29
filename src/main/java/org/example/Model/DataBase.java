@@ -6,6 +6,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.XMLFormatter;
 
+/**
+ * База данных
+ */
 public class DataBase implements IDB {
     Logger logger;
     FileHandler fh;
@@ -16,6 +19,10 @@ public class DataBase implements IDB {
     BufferedReader brg;
     Stock stock;
 
+    /**
+     * @param stock экземпляр склада для наполнения
+     * @throws IOException
+     */
     public DataBase(Stock stock) throws IOException {
         this.bwt = new BufferedWriter(new FileWriter("toys.csv", true));
         this.brt = new BufferedReader(new FileReader("toys.csv"));
@@ -25,7 +32,10 @@ public class DataBase implements IDB {
         loggerInit();
     }
 
-
+    /**
+     * Записать в базу данных ассортимент игрушек
+     * @return возвращает сам себя
+     */
     @Override
     public DataBase writeToys() {
         try {
@@ -37,6 +47,10 @@ public class DataBase implements IDB {
         return this;
     }
 
+    /**
+     * Считать из файла данные об ассортименте игрушек
+     * @return возвращает сам себя
+     */
     @Override
     public DataBase readToys() {
         try {
@@ -49,6 +63,10 @@ public class DataBase implements IDB {
         return this;
     }
 
+    /**
+     * Записать в базу данных список игрушек, выигранных в лотерее
+     * @return возвращает сам себя
+     */
     @Override
     public DataBase writeGifts() {
         try {
@@ -60,6 +78,10 @@ public class DataBase implements IDB {
         return this;
     }
 
+    /**
+     * Считать из файла данные об игрушках, выигранных в лотерею
+     * @return возвращает сам себя
+     */
     @Override
     public DataBase readGifts() {
         try {
@@ -72,6 +94,11 @@ public class DataBase implements IDB {
         return this;
     }
 
+    /**
+     * Преобразование данных об игрушках перед загрузкой информации на склад
+     * @param line строка текста из файла
+     * @return экземпляр игрушки
+     */
     private Toy parsToys(String line) {
         try {
             String[] values = line.split(";");
@@ -86,6 +113,11 @@ public class DataBase implements IDB {
         }
     }
 
+    /**
+     * Преобразование данных о выигранных игрушках перед загрузкой информации на склад
+     * @param line строка текста из файла
+     * @return экземпляр выигранной игрушки
+     */
     private Gift parsGift(String line) {
         try {
             String[] values = line.split(";");
@@ -98,6 +130,10 @@ public class DataBase implements IDB {
         }
     }
 
+    /**
+     * Инициализация логера
+     * @throws IOException
+     */
     private void loggerInit() throws IOException {
         this.logger = Logger.getLogger(DataBase.class.getName());
         this.fh = new FileHandler("logs.xml");
@@ -106,6 +142,9 @@ public class DataBase implements IDB {
         fh.setFormatter(xml);
     }
 
+    /**
+     * @return логер
+     */
     public Logger getLogger() {
         return logger;
     }

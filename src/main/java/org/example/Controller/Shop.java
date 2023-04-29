@@ -7,10 +7,11 @@ import org.example.View.UI.UserInterface;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Магазин игрушек
+ */
 public class Shop implements IShop {
     private DataBase db;
     private Stock stock;
@@ -26,6 +27,10 @@ public class Shop implements IShop {
         this.choiceMenu = 0;
     }
 
+    /**
+     * Запуск программы
+     * @throws InterruptedException
+     */
     @Override
     public void run() throws InterruptedException {
         db.readToys().readGifts();
@@ -83,6 +88,9 @@ public class Shop implements IShop {
         }
     }
 
+    /**
+     * Остановка программы
+     */
     @Override
     public void stop() {
         open = false;

@@ -10,28 +10,45 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Ввод команд пользователем
+ */
 public class UserInterface implements IUserAction, IUserInfo {
     Logger logger;
     private final Viewer viewer;
     private final String[] listsMenu;
 
+    /**
+     * @param logger модуль логирования
+     */
     public UserInterface(Logger logger) {
         this.logger = logger;
         this.viewer = new Viewer();
         this.listsMenu = viewer.getView();
     }
 
+    /**
+     * Показ страницы меню
+     * @param index страница меню
+     */
     @Override
     public void showMenu(int index) {
         viewer.show(listsMenu[index]);
     }
 
+    /**
+     * Логирование и отправка юзеру сообщения о добавлении новой позиции
+     */
     @Override
     public void newItem() {
         viewer.show("\nПозиция добавлена");
         logger.info("Позиция добавлена");
     }
 
+    /**
+     * Выбор страницы меню
+     * @return индекс страницы меню
+     */
     @Override
     public Integer choiceMenu() {
         Integer index = 0;
@@ -46,6 +63,10 @@ public class UserInterface implements IUserAction, IUserInfo {
         return index;
     }
 
+    /**
+     * Показ ассортимента игрушек
+     * @param allToys коллекция, содержащая id игрушек и их экземпляры
+     */
     @Override
     public void showPositions(HashMap<Integer, Toy> allToys) {
         for (Map.Entry<Integer, Toy> toy : allToys.entrySet()) {
@@ -54,6 +75,11 @@ public class UserInterface implements IUserAction, IUserInfo {
         if (allToys.size() == 0) viewer.show("\nСписок товаров пуст\n");
     }
 
+    /**
+     * Ввод данных для новой позиции
+     * @return экземпляр игрушки
+     * @throws InterruptedException
+     */
     @Override
     public Toy addItem() throws InterruptedException {
         try {
@@ -67,24 +93,39 @@ public class UserInterface implements IUserAction, IUserInfo {
         }
     }
 
+    /**
+     * Внесение изменений в количество игрушек
+     * @param allToys коллекция, содержащая id игрушек и их экземпляры
+     * @throws InterruptedException
+     */
     @Override
     public void amount(HashMap<Integer, Toy> allToys) throws InterruptedException {
-        Integer findId = fundId(allToys);
+        Integer findId = findId(allToys);
         Integer newAmount = enterAmount();
         allToys.get(findId).setAmount(newAmount);
         viewer.changeComplete();
         logger.info("Изменение количества игрушек");
     }
 
+    /**
+     * Внесение изменений в вероятность выигрыша
+     * @param allToys коллекция, содержащая id игрушек и их экземпляры
+     * @throws InterruptedException
+     */
     @Override
     public void probability(HashMap<Integer, Toy> allToys) throws InterruptedException {
-        Integer findId = fundId(allToys);
+        Integer findId = findId(allToys);
         Float newProbability = enterProbability();
         allToys.get(findId).setProbability(newProbability);
         viewer.changeComplete();
         logger.info("Изменение вероятности выигрыша");
     }
 
+    /**
+     * Запуск лотереии
+     * @param allToys коллекция, содержащая id игрушек и их экземпляры
+     * @return коллекция игрушек, выигранных в лотерее
+     */
     @Override
     public ArrayList<Toy> lottery(HashMap<Integer, Toy> allToys) {
         Random rand = new Random();
@@ -105,6 +146,10 @@ public class UserInterface implements IUserAction, IUserInfo {
         return winners;
     }
 
+    /**
+     * Выдача призов
+     * @param gift очередь с игрушками на выдачу
+     */
     @Override
     public void takePrize(Queue<Gift> gift) {
         if (gift.size() > 0) {
@@ -129,23 +174,38 @@ public class UserInterface implements IUserAction, IUserInfo {
         else viewer.show("\nТак ведь раздавать-то нечего =(");
     }
 
+    /**
+     * Остановка цикла с ожиданием ввода клавиши
+     */
     @Override
     public void pressEnter() {
         viewer.inputStr("\nВведите 'q' для выхода ");
     }
 
+    /**
+     * Логирование и информирование об ошибке ввода данных
+     */
     @Override
     public void error() {
         viewer.inputError();
         logger.log(Level.WARNING, "Ошибка ввода данных");
     }
 
+    /**
+     * Логирование и информирование об ошибке создания новой игрушки
+     */
     @Override
     public void fail() {
         viewer.show("\nПозиция не создана");
         logger.log(Level.WARNING, "Ошибка при создании новой позиции");
     }
 
+    /**
+     * Проверка id
+     * @param checkingId проверяемый id
+     * @param toysId список id всех игрушек
+     * @return результат поиска совпадений
+     */
     private boolean checkId(Integer checkingId, Set<Integer> toysId) {
         for (Integer id : toysId) {
             if (checkingId.equals(id))
@@ -154,6 +214,12 @@ public class UserInterface implements IUserAction, IUserInfo {
         return false;
     }
 
+    /**
+     * Ввод и обработка id игрушки
+     * @param allId список всех id
+     * @return валидный id
+     * @throws InterruptedException
+     */
     private Integer findById(Set<Integer> allId) throws InterruptedException {
         Integer findId = -1;
         boolean check = true;
@@ -177,6 +243,11 @@ public class UserInterface implements IUserAction, IUserInfo {
         return findId;
     }
 
+    /**
+     * Ввод и обработка количества игрушек
+     * @return валидное количество
+     * @throws InterruptedException
+     */
     private Integer enterAmount() throws InterruptedException {
         Integer amount = -1;
         do {
@@ -192,6 +263,11 @@ public class UserInterface implements IUserAction, IUserInfo {
         return amount;
     }
 
+    /**
+     * Ввод и обработка вероятности выигрыша
+     * @return валидная вероятность
+     * @throws InterruptedException
+     */
     private Float enterProbability() throws InterruptedException {
         Integer probability = -1;
         do {
@@ -208,11 +284,21 @@ public class UserInterface implements IUserAction, IUserInfo {
         return probability.floatValue() / 100;
     }
 
-    private Integer fundId(HashMap<Integer, Toy> allToys) throws InterruptedException {
+    /**
+     * Модуль вывода позиций перед запросом id
+     * @param allToys коллекция, содержащая id игрушек и их экземпляры
+     * @return id всех игрушек
+     * @throws InterruptedException
+     */
+    private Integer findId(HashMap<Integer, Toy> allToys) throws InterruptedException {
         showPositions(allToys);
         return findById(allToys.keySet());
     }
 
+    /**
+     * Запись в файл информации о выдачи игрушки победителю лотереи
+     * @param gift
+     */
     private void writeFile(Gift gift) {
         try {
             BufferedWriter bw = new BufferedWriter(new FileWriter("win.txt", true));
