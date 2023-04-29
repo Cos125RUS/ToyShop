@@ -4,16 +4,15 @@ package org.example.Model;
  * Игрушки из магазина игрушек в которые играют игривые игруны
  */
 public class Toy extends Product implements IToy {
-    int id;
-    String name;
     Integer amount;
     Float probability;
     private static int id_count = 0; //Счётчик id
 
     /**
      * Инициализация в момент наполнения пользователем ассортимента магазина
-     * @param name название игрушки
-     * @param amount количество игрушек на складе
+     *
+     * @param name        название игрушки
+     * @param amount      количество игрушек на складе
      * @param probability вероятность выигрыша в лотерее
      */
     public Toy(String name, Integer amount, Float probability) {
@@ -24,19 +23,22 @@ public class Toy extends Product implements IToy {
 
     /**
      * Инизиализация при загрузке из файла
-     * @param id id игрушки
-     * @param name нащвание игрушки
-     * @param amount количество на складе
+     *
+     * @param id          id игрушки
+     * @param name        нащвание игрушки
+     * @param amount      количество на складе
      * @param probability вероятность выигрыша
      */
     public Toy(int id, String name, Integer amount, Float probability) {
         super(id, name);
         this.amount = amount;
         this.probability = probability;
+        id_count = id + 1;
     }
 
     /**
      * Изменение количества игрушек на складе
+     *
      * @param amount новое значение количества игрушек
      */
     public void setAmount(int amount) {
@@ -52,6 +54,7 @@ public class Toy extends Product implements IToy {
 
     /**
      * Изменение вероятности выигрыша
+     *
      * @param probability новое значение вероятности выигрыша
      */
     public void setProbability(Float probability) {
@@ -68,6 +71,7 @@ public class Toy extends Product implements IToy {
 
     /**
      * Подготовка к записи в файл базы данных
+     *
      * @return строка для записи
      */
     @Override
@@ -77,7 +81,7 @@ public class Toy extends Product implements IToy {
 
     @Override
     public String toString() {
-        return id + "\t" + name + "\t\t" + amount + "\t\t\t\t" + probability;
+        return id + "sepor" + name + "sepor" + amount + "sepor" + probability;
     }
 
     /**

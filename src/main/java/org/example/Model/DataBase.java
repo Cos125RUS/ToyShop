@@ -13,10 +13,6 @@ public class DataBase implements IDB {
     Logger logger;
     FileHandler fh;
     XMLFormatter xml;
-    BufferedWriter bwt;
-    BufferedReader brt;
-    BufferedWriter bwg;
-    BufferedReader brg;
     Stock stock;
 
     /**
@@ -24,10 +20,6 @@ public class DataBase implements IDB {
      * @throws IOException
      */
     public DataBase(Stock stock) throws IOException {
-        this.bwt = new BufferedWriter(new FileWriter("toys.csv", true));
-        this.brt = new BufferedReader(new FileReader("toys.csv"));
-        this.bwg = new BufferedWriter(new FileWriter("gifts.csv", true));
-        this.brg = new BufferedReader(new FileReader("gifts.csv"));
         this.stock = stock;
         loggerInit();
     }
@@ -39,7 +31,8 @@ public class DataBase implements IDB {
     @Override
     public DataBase writeToys() {
         try {
-            bwt.append(String.format(stock.allToysToWrite()));
+            BufferedWriter bwt = new BufferedWriter(new FileWriter("toys.csv"));
+            bwt.write(String.format(stock.allToysToWrite()));
             bwt.flush();
         } catch (IOException writeFile) {
             logger.log(Level.WARNING, "Ошибка записи файла");
@@ -52,7 +45,8 @@ public class DataBase implements IDB {
      * @return возвращает сам себя
      */
     @Override
-    public DataBase readToys() {
+    public DataBase readToys() throws FileNotFoundException {
+        BufferedReader brt = new BufferedReader(new FileReader("toys.csv"));
         try {
             String line;
             while ((line = brt.readLine()) != null)
@@ -70,7 +64,8 @@ public class DataBase implements IDB {
     @Override
     public DataBase writeGifts() {
         try {
-            bwg.append(String.format(stock.allGiftsToWrite()));
+            BufferedWriter bwg = new BufferedWriter(new FileWriter("gifts.csv"));
+            bwg.write(String.format(stock.allGiftsToWrite()));
             bwg.flush();
         } catch (IOException writeFile) {
             logger.log(Level.WARNING, "Ошибка записи файла");
@@ -83,7 +78,8 @@ public class DataBase implements IDB {
      * @return возвращает сам себя
      */
     @Override
-    public DataBase readGifts() {
+    public DataBase readGifts() throws FileNotFoundException {
+        BufferedReader brg = new BufferedReader(new FileReader("gifts.csv"));
         try {
             String line;
             while ((line = brg.readLine()) != null)

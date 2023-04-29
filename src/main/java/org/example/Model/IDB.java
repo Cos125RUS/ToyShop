@@ -1,8 +1,10 @@
 package org.example.Model;
 
+import java.io.FileNotFoundException;
+
 public interface IDB {
     public DataBase writeToys();
-    public DataBase readToys();
+    public DataBase readToys() throws FileNotFoundException;
     public DataBase writeGifts();
-    public DataBase readGifts();
+    public DataBase readGifts() throws FileNotFoundException;
 }

@@ -1,5 +1,6 @@
 package org.example.View.Viewer;
 
+import java.util.LinkedList;
 import java.util.Scanner;
 
 /**
@@ -7,12 +8,10 @@ import java.util.Scanner;
  */
 public class Viewer implements IPrompt, IShow {
     private StringBuilder sb;
-    private Scanner scan;
     private String[] view;
 
     public Viewer() {
         this.sb = new StringBuilder();
-        this.scan = new Scanner(System.in);
         this.view = allView();
     }
 
@@ -45,7 +44,7 @@ public class Viewer implements IPrompt, IShow {
      */
     private String positions() {
         return "\nАссортимент игрушек в магазине:\n" +
-            "id\tНазвание\tКоличество\t\tВероятность выигрыша";
+                "id\t\tНазвание\t\t\tКоличество\t\tВероятность выигрыша";
     }
 
     /**
@@ -86,10 +85,13 @@ public class Viewer implements IPrompt, IShow {
     /**
      * @return Прощальный текст
      */
-    private String exit() { return "\nДо новых встреч!"; }
+    private String exit() {
+        return "\nДо новых встреч!";
+    }
 
     /**
      * Вывод текста на экран
+     *
      * @param text сообщение, выводимое на экран
      */
     @Override
@@ -114,6 +116,36 @@ public class Viewer implements IPrompt, IShow {
     }
 
     /**
+     * Печать таблицы с ассортиментом
+     * @param data данные по всем игрушкам
+     */
+    @Override
+    public void table(LinkedList<String> data) {
+        StringBuilder sb = new StringBuilder();
+        int size = data.size();
+        String[][] table = new String[size][4];
+        for (int i = 0; i < size; i++) {
+            table[i] = data.poll().split("sepor");
+            switch (table[i][0].length()) {
+                case 1:
+                    table[i][0] = "00" + table[i][0];
+                    break;
+                case 2:
+                    table[i][0] = "0" + table[i][0];
+                    break;
+            }
+            sb.append(table[i][0]).append("\t\t").append(table[i][1]);
+            for (int j = table[i][1].length(); j < 21; j++)
+                sb.append(' ');
+            sb.append('\t').append(table[i][2]);
+            for (int j = table[i][2].length(); j < 16; j++)
+                sb.append(' ');
+            sb.append('\t').append(table[i][3]).append('\n');
+        }
+        show(sb.toString());
+    }
+
+    /**
      * Ввод целочисленных данных
      * @param text приглашение ко вводу
      * @return Целочисленное значение
@@ -121,12 +153,8 @@ public class Viewer implements IPrompt, IShow {
     @Override
     public Integer inputInt(String text) {
         System.out.print(text);
-        try {
-            return scan.nextInt();
-        } catch (Exception e) {
-            scan = new Scanner(System.in);
-            return null;
-        }
+        Scanner scan = new Scanner(System.in);
+        return scan.nextInt();
     }
 
     /**
@@ -137,23 +165,8 @@ public class Viewer implements IPrompt, IShow {
     @Override
     public String inputStr(String text) {
         System.out.print(text);
-        return scan.next();
-    }
-
-    /**
-     * Ввод вещественных чисел
-     * @param text приглашение ко вводу
-     * @return Вещественное число
-     */
-    @Override
-    public Float inputFloat(String text) {
-        System.out.print(text);
-        try {
-            return scan.nextFloat();
-        } catch (Exception e) {
-            scan = new Scanner(System.in);
-            return null;
-        }
+        Scanner scan = new Scanner(System.in);
+        return scan.nextLine();
     }
 
     /**

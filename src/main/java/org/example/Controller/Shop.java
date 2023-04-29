@@ -5,6 +5,7 @@ import org.example.Model.Stock;
 import org.example.Model.Toy;
 import org.example.View.UI.UserInterface;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -32,7 +33,7 @@ public class Shop implements IShop {
      * @throws InterruptedException
      */
     @Override
-    public void run() throws InterruptedException {
+    public void run() throws InterruptedException, FileNotFoundException {
         db.readToys().readGifts();
         while (open) {
             ui.showMenu(choiceMenu);
