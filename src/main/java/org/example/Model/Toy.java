@@ -18,6 +18,13 @@ public class Toy implements IToy{
         this.name = name;
     }
 
+    public Toy(int id, String name, Integer amount, Float probability) {
+        this.id = id;
+        this.name = name;
+        this.amount = amount;
+        this.probability = probability;
+    }
+
     public Integer getAmount() {
         return amount;
     }
@@ -37,6 +44,11 @@ public class Toy implements IToy{
     @Override
     public void giftIt() {
         this.amount--;
+    }
+
+    @Override
+    public String toWrite() {
+        return id + ";" + name + ";" + amount + ";" + probability + "\n";
     }
 
     @Override

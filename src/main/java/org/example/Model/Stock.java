@@ -47,6 +47,27 @@ public class Stock implements IStock{
             }
     }
 
+    @Override
+    public String allToysToWrite() {
+        StringBuilder sb = new StringBuilder();
+        for (Toy toy: allToys.values())
+            sb.append(toy.toWrite());
+        return sb.toString();
+    }
+
+    @Override
+    public String allGiftsToWrite() {
+        StringBuilder sb = new StringBuilder();
+        for (Gift gift: winners)
+            sb.append(gift.toWrite());
+        return sb.toString();
+    }
+
+    @Override
+    public void loadWinners(Gift gift) {
+        winners.add(gift);
+    }
+
     public Queue<Gift> getWinners() {
         return winners;
     }

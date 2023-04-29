@@ -7,7 +7,14 @@ public class Gift extends Toy{
     }
 
     @Override
+    public String toWrite() {
+        return id + ";" + name + "\n";
+    }
+
+    @Override
     public String toString() {
         return name;
     }
+
+
 }

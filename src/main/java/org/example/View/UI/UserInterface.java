@@ -4,14 +4,19 @@ import org.example.Model.Gift;
 import org.example.Model.Toy;
 import org.example.View.Viewer.Viewer;
 
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class UserInterface implements IUserAction, IUserInfo {
+    Logger logger;
     private final Viewer viewer;
     private final String[] listsMenu;
 
-    public UserInterface() {
+    public UserInterface(Logger logger) {
+        this.logger = logger;
         this.viewer = new Viewer();
         this.listsMenu = viewer.getView();
     }
@@ -24,6 +29,7 @@ public class UserInterface implements IUserAction, IUserInfo {
     @Override
     public void newItem() {
         viewer.show("\nПозиция добавлена");
+        logger.info("Позиция добавлена");
     }
 
     @Override
@@ -33,6 +39,7 @@ public class UserInterface implements IUserAction, IUserInfo {
             index = viewer.inputInt("Выберите пункт меню: ");
         } catch (Exception choiceMenu) {
             viewer.inputError();
+            logger.log(Level.WARNING, "Ошибка ввода данных");
         }
         if (index == 9)
             index = 7;
@@ -55,6 +62,7 @@ public class UserInterface implements IUserAction, IUserInfo {
         } catch (Exception addItem) {
             viewer.inputError();
             TimeUnit.SECONDS.sleep(1);
+            logger.log(Level.WARNING, "Ошибка ввода данных");
             return null;
         }
     }
@@ -65,6 +73,7 @@ public class UserInterface implements IUserAction, IUserInfo {
         Integer newAmount = enterAmount();
         allToys.get(findId).setAmount(newAmount);
         viewer.changeComplete();
+        logger.info("Изменение количества игрушек");
     }
 
     @Override
@@ -73,6 +82,7 @@ public class UserInterface implements IUserAction, IUserInfo {
         Float newProbability = enterProbability();
         allToys.get(findId).setProbability(newProbability);
         viewer.changeComplete();
+        logger.info("Изменение вероятности выигрыша");
     }
 
     @Override
@@ -83,10 +93,14 @@ public class UserInterface implements IUserAction, IUserInfo {
             if (rand.nextFloat() <= toy.getProbability())
                 winners.add(toy);
         if (winners.size() > 0) {
-            for (Toy toy : winners)
+            for (Toy toy : winners) {
                 viewer.show(String.format("\nРозыгран приз: %s", toy.getName()));
-        } else
+                logger.info("Приз разыгран");
+            }
+        } else {
             viewer.show("\nПобедило казино... магазин");
+            logger.info("Нет выигрыша");
+        }
         pressEnter();
         return winners;
     }
@@ -99,9 +113,13 @@ public class UserInterface implements IUserAction, IUserInfo {
             String choice;
             do {
                 choice = viewer.inputStr("\nВыдать игрушку счастливому ребёнку (y/n)?) ");
-                if (choice.equals("y"))
+                if (choice.equals("y")) {
+                    Gift toy = gift.poll();
                     viewer.show(String.format("\n%s выдан визжащему от восторга мелкому паганцу",
-                            gift.poll().toString()));
+                            toy.toString()));
+                    writeFile(toy);
+                    logger.info("Игрушка выдана");
+                }
                 if (choice.equals("n"))
                     viewer.show("\nДа, пусть подождут до Нового года");
                 if (!choice.equals("y") && !choice.equals("n"))
@@ -119,11 +137,13 @@ public class UserInterface implements IUserAction, IUserInfo {
     @Override
     public void error() {
         viewer.inputError();
+        logger.log(Level.WARNING, "Ошибка ввода данных");
     }
 
     @Override
     public void fail() {
         viewer.show("\nПозиция не создана");
+        logger.log(Level.WARNING, "Ошибка при создании новой позиции");
     }
 
     private boolean checkId(Integer checkingId, Set<Integer> toysId) {
@@ -151,6 +171,7 @@ public class UserInterface implements IUserAction, IUserInfo {
             } catch (Exception amount) {
                 viewer.inputError();
                 TimeUnit.SECONDS.sleep(1);
+                logger.log(Level.WARNING, "Ошибка ввода данных");
             }
         } while (!check);
         return findId;
@@ -165,6 +186,7 @@ public class UserInterface implements IUserAction, IUserInfo {
             } catch (Exception enterAmount) {
                 viewer.inputError();
                 TimeUnit.SECONDS.sleep(1);
+                logger.log(Level.WARNING, "Ошибка ввода данных");
             }
         } while (amount < 0);
         return amount;
@@ -180,6 +202,7 @@ public class UserInterface implements IUserAction, IUserInfo {
             } catch (Exception enterProbability) {
                 viewer.inputError();
                 TimeUnit.SECONDS.sleep(1);
+                logger.log(Level.WARNING, "Ошибка ввода данных");
             }
         } while (probability < 0 || probability > 100);
         return probability.floatValue() / 100;
@@ -188,5 +211,16 @@ public class UserInterface implements IUserAction, IUserInfo {
     private Integer fundId(HashMap<Integer, Toy> allToys) throws InterruptedException {
         showPositions(allToys);
         return findById(allToys.keySet());
+    }
+
+    private void writeFile(Gift gift) {
+        try {
+            BufferedWriter bw = new BufferedWriter(new FileWriter("win.txt", true));
+            bw.append(String.format("Выдан %s", gift.toString())).append("\n");
+            bw.flush();
+        }
+        catch (IOException writeFile){
+            logger.log(Level.WARNING, "Ошибка записи файла");
+        }
     }
 }

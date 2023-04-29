@@ -1,30 +1,34 @@
 package org.example.Controller;
 
+import org.example.Model.DataBase;
 import org.example.Model.Stock;
 import org.example.Model.Toy;
 import org.example.View.UI.UserInterface;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 public class Shop implements IShop {
-//    private ArrayList<Toy> allToys;
+    private DataBase db;
     private Stock stock;
     private final UserInterface ui;
     private Boolean open;
     private Integer choiceMenu;
 
-    public Shop() {
+    public Shop() throws IOException {
         this.stock = new Stock();
-        this.ui = new UserInterface();
+        this.db = new DataBase(stock);
+        this.ui = new UserInterface(db.getLogger());
         this.open = true;
         this.choiceMenu = 0;
     }
 
     @Override
     public void run() throws InterruptedException {
+        db.readToys().readGifts();
         while (open) {
             ui.showMenu(choiceMenu);
             switch (choiceMenu) {
@@ -69,6 +73,7 @@ public class Shop implements IShop {
                     break;
                 case 7:
                     TimeUnit.SECONDS.sleep(1);
+                    db.writeToys().writeGifts();
                     stop();
                     break;
                 default:

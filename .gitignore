@@ -37,3 +37,6 @@ build/
 ### Mac OS ###
 .DS_Store
 /src/main/java/org/example/Test/
+/gifts.csv
+/toys.csv
+/win.txt
