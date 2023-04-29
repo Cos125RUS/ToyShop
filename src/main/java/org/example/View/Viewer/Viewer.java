@@ -54,7 +54,7 @@ public class Viewer implements IPrompt, IShow {
     }
 
     private String takePrize() {
-        return "\nВыдача призов";
+        return "\nВыдача призов\n\nОчередб на выдачу:";
     }
 
     private String exit() { return "\nДо новых встреч!"; }

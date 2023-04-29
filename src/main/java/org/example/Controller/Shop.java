@@ -52,18 +52,23 @@ public class Shop implements IShop {
                     choiceMenu = 0;
                     break;
                 case 4:
-
+                    ui.probability(stock.getAllToys());
+                    TimeUnit.SECONDS.sleep(1);
                     choiceMenu = 0;
                     break;
                 case 5:
-
+                    ArrayList<Toy> win = ui.lottery(stock.getAllToys());
+                    stock.lottery(win);
+                    TimeUnit.SECONDS.sleep(1);
                     choiceMenu = 0;
                     break;
                 case 6:
-
+                    ui.takePrize(stock.getWinners());
+                    TimeUnit.SECONDS.sleep(1);
                     choiceMenu = 0;
                     break;
                 case 7:
+                    TimeUnit.SECONDS.sleep(1);
                     stop();
                     break;
                 default:

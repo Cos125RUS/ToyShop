@@ -1,12 +1,10 @@
 package org.example.View.UI;
 
+import org.example.Model.Gift;
 import org.example.Model.Toy;
 import org.example.View.Viewer.Viewer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class UserInterface implements IUserAction, IUserInfo {
@@ -46,6 +44,7 @@ public class UserInterface implements IUserAction, IUserInfo {
         for (Map.Entry<Integer, Toy> toy : allToys.entrySet()) {
             viewer.show(toy.getValue().toString());
         }
+        if (allToys.size() == 0) viewer.show("\nСписок товаров пуст\n");
     }
 
     @Override
@@ -62,31 +61,59 @@ public class UserInterface implements IUserAction, IUserInfo {
 
     @Override
     public void amount(HashMap<Integer, Toy> allToys) throws InterruptedException {
-        showPositions(allToys);
-        Integer findId = findById(allToys.keySet());
+        Integer findId = fundId(allToys);
         Integer newAmount = enterAmount();
         allToys.get(findId).setAmount(newAmount);
         viewer.changeComplete();
     }
 
     @Override
-    public Float probability() {
-        return null;
+    public void probability(HashMap<Integer, Toy> allToys) throws InterruptedException {
+        Integer findId = fundId(allToys);
+        Float newProbability = enterProbability();
+        allToys.get(findId).setProbability(newProbability);
+        viewer.changeComplete();
     }
 
     @Override
-    public Toy lottery(ArrayList<Toy> allToys) {
-        return null;
+    public ArrayList<Toy> lottery(HashMap<Integer, Toy> allToys) {
+        Random rand = new Random();
+        ArrayList<Toy> winners = new ArrayList<>();
+        for (Toy toy : allToys.values())
+            if (rand.nextFloat() <= toy.getProbability())
+                winners.add(toy);
+        if (winners.size() > 0) {
+            for (Toy toy : winners)
+                viewer.show(String.format("\nРозыгран приз: %s", toy.getName()));
+        } else
+            viewer.show("\nПобедило казино... магазин");
+        pressEnter();
+        return winners;
     }
 
     @Override
-    public void takePrize(Toy gift) {
-
+    public void takePrize(Queue<Gift> gift) {
+        if (gift.size() > 0) {
+            for (Gift next : gift)
+                viewer.show(next.toString());
+            String choice;
+            do {
+                choice = viewer.inputStr("\nВыдать игрушку счастливому ребёнку (y/n)?) ");
+                if (choice.equals("y"))
+                    viewer.show(String.format("\n%s выдан визжащему от восторга мелкому паганцу",
+                            gift.poll().toString()));
+                if (choice.equals("n"))
+                    viewer.show("\nДа, пусть подождут до Нового года");
+                if (!choice.equals("y") && !choice.equals("n"))
+                    viewer.show("\nЧто ты такое ввёл? Всего две буквы! 'y' или 'n'" );
+            } while (!choice.equals("n"));
+        }
+        else viewer.show("\nТак ведь раздавать-то нечего =(");
     }
 
     @Override
     public void pressEnter() {
-        viewer.inputStr("\nНажмите Enter для выхода");
+        viewer.inputStr("\nВведите 'q' для выхода ");
     }
 
     @Override
@@ -112,13 +139,13 @@ public class UserInterface implements IUserAction, IUserInfo {
         boolean check = true;
         do {
             try {
-                findId = viewer.inputInt("Укажите id игрушки: ");
+                findId = viewer.inputInt("\nУкажите id игрушки: ");
                 if (findId < 0) {
-                    viewer.show("id не может быть меньше 0");
+                    viewer.show("\nid не может быть меньше 0");
                     check = false;
                 }
                 if (!checkId(findId, allId)) {
-                    viewer.show("id не найден");
+                    viewer.show("\nid не найден");
                     check = false;
                 }
             } catch (Exception amount) {
@@ -156,5 +183,10 @@ public class UserInterface implements IUserAction, IUserInfo {
             }
         } while (probability < 0 || probability > 100);
         return probability.floatValue() / 100;
+    }
+
+    private Integer fundId(HashMap<Integer, Toy> allToys) throws InterruptedException {
+        showPositions(allToys);
+        return findById(allToys.keySet());
     }
 }

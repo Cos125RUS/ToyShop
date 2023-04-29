@@ -14,6 +14,10 @@ public class Toy implements IToy{
         this.probability = probability;
     }
 
+    public Toy(String name) {
+        this.name = name;
+    }
+
     public Integer getAmount() {
         return amount;
     }
@@ -31,7 +35,7 @@ public class Toy implements IToy{
     }
 
     @Override
-    public void buyIt() {
+    public void giftIt() {
         this.amount--;
     }
 
@@ -42,5 +46,9 @@ public class Toy implements IToy{
 
     public int getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

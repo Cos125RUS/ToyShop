@@ -1,5 +1,5 @@
 package org.example.Model;
 
 public interface IToy {
-    public void buyIt();
+    public void giftIt();
 }

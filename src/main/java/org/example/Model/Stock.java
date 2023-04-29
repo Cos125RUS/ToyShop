@@ -7,11 +7,11 @@ import java.util.Queue;
 
 public class Stock implements IStock{
     private HashMap<Integer, Toy> allToys;
-    private Queue<Toy> winner;
+    private Queue<Gift> winners;
 
     public Stock() {
         this.allToys = new HashMap<>();
-        this.winner = new LinkedList<>();
+        this.winners = new LinkedList<>();
     }
 
     public HashMap<Integer, Toy> getAllToys() {
@@ -36,5 +36,18 @@ public class Stock implements IStock{
     @Override
     public void changeProbability(Integer id, Float probability) {
 
+    }
+
+    @Override
+    public void lottery(ArrayList<Toy> win) {
+        if (win.size() > 0)
+            for (Toy toy: win){
+                winners.add(new Gift(toy.getId(), toy.getName()));
+                toy.giftIt();
+            }
+    }
+
+    public Queue<Gift> getWinners() {
+        return winners;
     }
 }
