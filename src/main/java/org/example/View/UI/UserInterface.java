@@ -162,10 +162,10 @@ public class UserInterface implements IUserAction, IUserInfo {
                 choice = viewer.inputStr("\nВыдать игрушку счастливому ребёнку (y/n)?) ");
                 if (choice.equals("y")) {
                     Gift toy = gift.poll();
+                    logger.info("Игрушка выдана");
                     viewer.show(String.format("\n%s выдан визжащему от восторга мелкому паганцу",
                             toy.toString()));
                     writeFile(toy);
-                    logger.info("Игрушка выдана");
                 }
                 if (choice.equals("n"))
                     viewer.show("\nДа, пусть подождут до Нового года");
